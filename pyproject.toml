@@ -1,6 +1,6 @@
 [project]
 name = "notdiamond-openai"
-version = "0.1.1"
+version = "0.1.2"
 description = "NotDiamond Python library for easy OpenAI integration."
 readme = "README.md"
 license = "Apache-2.0"
@@ -45,7 +45,7 @@ Homepage = "https://notdiamond.ai/"
 Repository = "https://github.com/Not-Diamond/openai-python"
 
 [project.scripts]
-openai = "openai.cli:main"
+notdiamond_openai = "notdiamond_openai.cli:main"
 
 [tool.rye]
 managed = true
@@ -103,7 +103,7 @@ include = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/openai"]
+packages = ["src/notdiamond_openai"]
 
 [tool.black]
 line-length = 120
