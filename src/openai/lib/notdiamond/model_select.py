@@ -35,7 +35,10 @@ def model_select(messages: list, llm_providers: list, api_key: str):
 
         return top_provider["model"]
     else:
-        print(f"ND API error: {response.status_code}")
+        if response.status_code == 401:
+            print(f"ND API error: {response.status_code}. Make sure you have a valid NotDiamond API Key.")
+        else:
+            print(f"ND API error: {response.status_code}")
         return None
 
 
