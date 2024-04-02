@@ -1,8 +1,8 @@
 import copy
 import json
 
+import httpx
 import ppdeep
-import requests
 
 
 def model_select(messages: list, llm_providers: list, api_key: str):
@@ -22,7 +22,7 @@ def model_select(messages: list, llm_providers: list, api_key: str):
     }
 
     try:
-        response = requests.post(url, data=json.dumps(final_payload), headers=headers)
+        response = httpx.post(url, data=json.dumps(final_payload), headers=headers)
     except Exception as e:
         print(f"ND API error for modelSelect: {e}")
         return None

@@ -1,6 +1,6 @@
 [project]
 name = "notdiamond-openai"
-version = "0.1.2"
+version = "0.1.4"
 description = "NotDiamond Python library for easy OpenAI integration."
 readme = "README.md"
 license = "Apache-2.0"
