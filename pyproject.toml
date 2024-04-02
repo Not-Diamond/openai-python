@@ -5,7 +5,7 @@ description = "NotDiamond Python library for easy OpenAI integration."
 readme = "README.md"
 license = "Apache-2.0"
 authors = [
-{ name = "NotDiamond", email = "t7@notdiamond.ai" },
+{ name = "NotDiamond", email = "t5@notdiamond.ai" },
 ]
 dependencies = [
     "httpx>=0.23.0, <1",
