@@ -6,11 +6,11 @@ import ppdeep
 
 
 def model_select(messages: list, llm_providers: list, api_key: str):
-    url = "https://not-diamond-server.onrender.com/v1/optimizer/modelSelect"
+    url = "https://not-diamond-server.onrender.com/v2/optimizer/modelSelect"
 
-    prompt_payload_part = transform_messages(copy.deepcopy(messages))
-    final_payload = {
-        **prompt_payload_part,
+    payload = {
+        "messages": transform_messages(copy.deepcopy(messages)),
+        "hash_digest": hash_digest(messages),
         "llm_providers": transformed_providers(llm_providers),
         "metric": "accuracy",
         "max_model_depth": len(llm_providers),
@@ -22,7 +22,7 @@ def model_select(messages: list, llm_providers: list, api_key: str):
     }
 
     try:
-        response = httpx.post(url, data=json.dumps(final_payload), headers=headers)
+        response = httpx.post(url, data=json.dumps(payload), headers=headers)
     except Exception as e:
         print(f"ND API error for modelSelect: {e}")
         return None
@@ -43,33 +43,22 @@ def model_select(messages: list, llm_providers: list, api_key: str):
 
 
 def transform_messages(messages: list):
-    template = """SYSTEM: {system_prompt}
-    CONTEXT: {context_prompt}
-    QUERY: {user_query}
-    """
-    user_query = messages.pop()[1]
-    system_prompt = ""
-    context_prompt = ""
+    hashed_messages = []
+    for role, content in messages:
+        hashed_messages.append({"role": role, "content": nd_hash(content)})
 
-    for k, v in messages:
-        if k == "system":
-            system_prompt += f"{v}\n"
-        elif k == "user":
-            context_prompt += f"User: {v}\n"
-        elif k == "assistant":
-            context_prompt += f"Assistant: {v}\n"
+    return hashed_messages
 
-    return {
-        "prompt_template": template,
-        "formatted_prompt": nd_hash(
-            template.format(system_prompt=system_prompt, context_prompt=context_prompt, user_query=user_query)
-        ),
-        "components": {
-            "system_prompt": {"module_type": "NDPrompt", "content": nd_hash(system_prompt)},
-            "context_prompt": {"module_type": "NDContext", "content": nd_hash(context_prompt)},
-            "user_query": {"module_type": "NDQuery", "content": nd_hash(user_query)},
-        },
-    }
+
+def hash_digest(messages):
+    message_to_hash = ""
+    if messages[0][0] == "system":
+        message_to_hash += messages[0][1] + "\n"
+
+    if messages[-1][0] == "user":
+        message_to_hash += messages[-1][1]
+
+    return nd_hash(message_to_hash)
 
 
 def transformed_providers(llm_providers: list):
